@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/BurntSushi/toml"
 	"github.com/pkg/errors"
 	"io/ioutil"
@@ -19,24 +18,19 @@ func main() {
 func createNewSite(basePath string) error {
 	// 检验路径是否存在
 	fileInfo, err := os.Stat(basePath)
+	if err != nil && !os.IsNotExist(err) {
+		return err
+	}
+	if !fileInfo.IsDir() {
+		return errors.New("target path should be a directory")
+	}
+	// 检验是否为空
+	items, err := ioutil.ReadDir(basePath)
 	if err != nil {
-		if os.IsNotExist(err) {
-			fmt.Println("file not exists")
-		} else {
-			return err
-		}
-	} else {
-		if !fileInfo.IsDir() {
-			return errors.New("target path should be a directory")
-		}
-		// 检验是否为空
-		items, err := ioutil.ReadDir(basePath)
-		if err != nil {
-			return err
-		}
-		if len(items) != 0 {
-			return errors.New("target directory should be empty")
-		}
+		return err
+	}
+	if len(items) != 0 {
+		return errors.New("target directory should be empty")
 	}
 	archeTypePath := filepath.Join(basePath, "archetypes")
 	dirs := []string{
