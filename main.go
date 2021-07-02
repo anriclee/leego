@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/BurntSushi/toml"
+	"github.com/anriclee/leego/http"
 	"github.com/pkg/errors"
 	"io/ioutil"
 	"os"
@@ -9,10 +10,7 @@ import (
 )
 
 func main() {
-	err := createNewSite("mysite")
-	if err != nil {
-		panic(err)
-	}
+	http.Serve()
 }
 
 func createNewSite(basePath string) error {
